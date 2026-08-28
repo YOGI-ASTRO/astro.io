@@ -250,9 +250,7 @@
 
     .glass-card.full-width { grid-column: 1 / -1; }
 
-    .glass-card.hide {
-      display: none;
-    }
+    .glass-card.hide { display: none; }
 
     .glass-card h3 {
       font-size: 1.4rem;
@@ -264,6 +262,45 @@
       color: var(--text-muted);
       font-size: 0.95rem;
       line-height: 1.7;
+    }
+
+    /* Certifications Grid */
+    .cert-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .cert-card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .cert-card:hover {
+      border-color: var(--purple-glow);
+      transform: translateY(-3px);
+      box-shadow: 0 0 20px rgba(157, 78, 221, 0.25);
+    }
+
+    .cert-badge {
+      font-size: 1.8rem;
+    }
+
+    .cert-title {
+      font-weight: 600;
+      color: var(--text-main);
+      font-size: 0.95rem;
+    }
+
+    .cert-issuer {
+      font-size: 0.8rem;
+      color: var(--cyan-glow);
     }
 
     /* Code Terminal Section */
@@ -345,6 +382,7 @@
       gap: 1rem;
       justify-content: center;
       margin-top: 2rem;
+      flex-wrap: wrap;
     }
 
     .btn {
@@ -395,7 +433,7 @@
 </head>
 <body>
 
-  <!-- 3D Three.js WebGL Canvas -->
+  <!-- 3D Three.js WebGL Canvas with High Dot Density (250 Dots) -->
   <canvas id="webgl-canvas"></canvas>
 
   <!-- Glowing Cursor Follower -->
@@ -407,11 +445,11 @@
     <!-- Hero Section -->
     <div class="hero">
       <div class="status-pill gsap-hero">
-        <span class="status-dot"></span> Available for PLM Projects
+        <span class="status-dot"></span> Available for PLM Opportunities
       </div>
       <h1 class="gsap-hero">Yogeshwaran M</h1>
       <p class="subtitle gsap-hero">Windchill Developer</p>
-      <p class="bio-summary gsap-hero">Specializing in PTC Windchill enterprise backend customization, Java API integrations, Object Initialization Rules (OIR), and AI-assisted PLM workflow automation.</p>
+      <p class="bio-summary gsap-hero">B.E. Mechatronics Engineering graduate with 1+ years of hands-on technical experience in PTC Windchill backend architecture, Java customization, Object Initialization Rules (OIR), and automated workflow scripts.</p>
       <p style="color: var(--text-muted);" class="gsap-hero">&#128205; Bangalore, India</p>
 
       <div class="btn-group gsap-hero">
@@ -423,20 +461,69 @@
     <!-- Live Performance Metrics -->
     <div class="stats-grid gsap-reveal">
       <div class="stat-card">
+        <span class="stat-number">1+</span>
+        <span class="stat-label">Years of Industry Experience</span>
+      </div>
+      <div class="stat-card">
         <span class="stat-number">2+</span>
-        <span class="stat-label">Enterprise Clients (BMW & Johnson)</span>
+        <span class="stat-label">Enterprise Engagements (BMW & Johnson)</span>
       </div>
       <div class="stat-card">
-        <span class="stat-number">40%</span>
-        <span class="stat-label">Task Time Saved via AI Scripts</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-number">100%</span>
-        <span class="stat-label">Windchill OIR & Config Compliance</span>
+        <span class="stat-number">4</span>
+        <span class="stat-label">Specialized Windchill Certifications</span>
       </div>
     </div>
 
-    <!-- Interactive Terminal Code Snippet Preview -->
+    <!-- Education & Academic Foundation -->
+    <section class="gsap-reveal">
+      <h2 class="section-title">Education</h2>
+      <div class="glass-card full-width">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h3 style="color: var(--cyan-glow); margin-bottom: 0.25rem;">B.E. Mechatronics Engineering</h3>
+            <p style="color: var(--text-main); font-weight: 600;">Chennai Institute of Technology</p>
+          </div>
+          <span style="background: rgba(0, 242, 254, 0.1); border: 1px solid var(--cyan-glow); color: var(--cyan-glow); padding: 0.3rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">Graduated 2025</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Professional Certifications -->
+    <section class="gsap-reveal">
+      <h2 class="section-title">Verified Certifications</h2>
+      <div class="cert-grid">
+        <div class="cert-card">
+          <span class="cert-badge">&#127941;</span>
+          <div>
+            <div class="cert-title">Windchill Administration</div>
+            <div class="cert-issuer">PTC Domain Certification</div>
+          </div>
+        </div>
+        <div class="cert-card">
+          <span class="cert-badge">&#9733;</span>
+          <div>
+            <div class="cert-title">Windchill+</div>
+            <div class="cert-issuer">Cloud PLM Platform</div>
+          </div>
+        </div>
+        <div class="cert-card">
+          <span class="cert-badge">&#9881;</span>
+          <div>
+            <div class="cert-title">CCD Package</div>
+            <div class="cert-issuer">Configurable Cascade Descriptors</div>
+          </div>
+        </div>
+        <div class="cert-card">
+          <span class="cert-badge">&#9889;</span>
+          <div>
+            <div class="cert-title">Windchill Technical Essentials</div>
+            <div class="cert-issuer">PTC Core Essentials</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Code Snippet Preview -->
     <section class="gsap-reveal">
       <h2 class="section-title">Backend Architecture Snippet</h2>
       <div class="terminal-container">
@@ -468,11 +555,10 @@ public class CustomDocumentListener extends StandardKeyedEventListener {
       </div>
     </section>
 
-    <!-- Interactive Filterable Projects & Capabilities -->
+    <!-- Filterable Projects & Capabilities -->
     <section>
       <h2 class="section-title gsap-reveal">Specialization & Projects</h2>
       
-      <!-- Interactive Filter Tabs -->
       <div class="filter-tabs gsap-reveal">
         <button class="filter-btn active" onclick="filterCategory('all')">All Modules</button>
         <button class="filter-btn" onclick="filterCategory('backend')">Backend Java & API</button>
@@ -481,7 +567,6 @@ public class CustomDocumentListener extends StandardKeyedEventListener {
       </div>
 
       <div class="bento-grid" id="project-grid">
-        <!-- BMW Card -->
         <div class="glass-card gsap-reveal" data-category="backend" data-tilt data-tilt-max="8">
           <h3>BMW — Backend Customization</h3>
           <p>Engineered server-side Java customization, custom persistence listener hooks, and REST APIs for Windchill PLM to handle automotive product lifecycle data flows.</p>
@@ -492,7 +577,6 @@ public class CustomDocumentListener extends StandardKeyedEventListener {
           </div>
         </div>
 
-        <!-- Johnson Outdoors Card -->
         <div class="glass-card gsap-reveal" data-category="config" data-tilt data-tilt-max="8">
           <h3>Johnson Outdoors — Configuration</h3>
           <p>Structured end-to-end Windchill system architecture: Object Initialization Rules (OIR), custom lifecycle workflows, and XML configuration scripts.</p>
@@ -503,7 +587,6 @@ public class CustomDocumentListener extends StandardKeyedEventListener {
           </div>
         </div>
 
-        <!-- AI Innovation Card -->
         <div class="glass-card full-width ai-card gsap-reveal" data-category="ai" data-tilt data-tilt-max="4">
           <h3>&#9889; AI & Automated Workflow Suite</h3>
           <p>Integrated automated execution scripts and custom AI agents to auto-verify configuration rules, reducing manual technical tasks and accelerating release cycles.</p>
@@ -516,15 +599,17 @@ public class CustomDocumentListener extends StandardKeyedEventListener {
       </div>
     </section>
 
-    <!-- Tech Stack Summary -->
+    <!-- Core Tech Stack -->
     <section class="gsap-reveal">
       <h2 class="section-title">Core Technology Stack</h2>
       <div class="skills-wrapper">
         <div class="tech-tag">PTC Windchill</div>
+        <div class="tech-tag">Windchill+</div>
         <div class="tech-tag">Java (Backend Customization)</div>
         <div class="tech-tag">SQL Database</div>
         <div class="tech-tag">RESTful Web Services</div>
         <div class="tech-tag">OIR Configuration</div>
+        <div class="tech-tag">CCD Package</div>
         <div class="tech-tag">XML Schema</div>
         <div class="tech-tag">Data Utilities</div>
         <div class="tech-tag">AI Automation Scripts</div>
@@ -548,7 +633,7 @@ public class CustomDocumentListener extends StandardKeyedEventListener {
   </div>
 
   <script>
-    // Three.js Interactive 3D Background Mesh
+    // Three.js 3D Background Mesh with 250 Particles
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('webgl-canvas'), alpha: true, antialias: true });
@@ -557,19 +642,19 @@ public class CustomDocumentListener extends StandardKeyedEventListener {
     renderer.setPixelRatio(window.devicePixelRatio);
 
     const particlesGeometry = new THREE.BufferGeometry();
-    const count = 120;
+    const count = 250;
     const positions = new Float32Array(count * 3);
 
     for (let i = 0; i < count * 3; i++) {
-      positions[i] = (Math.random() - 0.5) * 15;
+      positions[i] = (Math.random() - 0.5) * 22;
     }
     particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
     const particlesMaterial = new THREE.PointsMaterial({
-      size: 0.05,
+      size: 0.065,
       color: 0x00f2fe,
       transparent: true,
-      opacity: 0.7
+      opacity: 0.75
     });
 
     const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
@@ -578,13 +663,13 @@ public class CustomDocumentListener extends StandardKeyedEventListener {
 
     let mouseX = 0, mouseY = 0;
     window.addEventListener('mousemove', (e) => {
-      mouseX = (e.clientX / window.innerWidth - 0.5) * 0.5;
-      mouseY = (e.clientY / window.innerHeight - 0.5) * 0.5;
+      mouseX = (e.clientX / window.innerWidth - 0.5) * 0.6;
+      mouseY = (e.clientY / window.innerHeight - 0.5) * 0.6;
     });
 
     function animate3D() {
       requestAnimationFrame(animate3D);
-      particlesMesh.rotation.y += 0.001;
+      particlesMesh.rotation.y += 0.0012;
       particlesMesh.rotation.x += (mouseY - particlesMesh.rotation.x) * 0.05;
       particlesMesh.rotation.y += (mouseX - particlesMesh.rotation.y) * 0.05;
       renderer.render(scene, camera);
