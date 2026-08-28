@@ -3,21 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Yogeshwaran M | Windchill Developer</title>
+  <title>Yogeshwaran M | Enterprise Windchill Developer</title>
   
-  <!-- GSAP & ScrollTrigger CDN -->
+  <!-- Libraries: Three.js, GSAP, ScrollTrigger, Vanilla-Tilt -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <!-- Vanilla-Tilt CDN for 3D Cards -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
 
   <style>
     :root {
-      --bg-dark: #060911;
-      --card-bg: rgba(13, 20, 36, 0.7);
-      --card-border: rgba(56, 189, 248, 0.18);
+      --bg-dark: #040711;
+      --card-bg: rgba(10, 16, 30, 0.75);
+      --card-border: rgba(0, 242, 254, 0.2);
       --cyan-glow: #00f2fe;
       --purple-glow: #9d4edd;
+      --accent-green: #00ff88;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
     }
@@ -29,12 +30,10 @@
       cursor: none;
     }
 
-    html {
-      scroll-behavior: smooth;
-    }
+    html { scroll-behavior: smooth; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace, sans-serif;
       background-color: var(--bg-dark);
       color: var(--text-main);
       line-height: 1.6;
@@ -42,8 +41,8 @@
       position: relative;
     }
 
-    /* Background Particle Canvas */
-    #bg-canvas {
+    /* 3D WebGL Background Canvas */
+    #webgl-canvas {
       position: fixed;
       top: 0;
       left: 0;
@@ -53,34 +52,31 @@
       pointer-events: none;
     }
 
-    /* Custom Glowing Cursor */
+    /* Cursor Followers */
     .cursor-dot, .cursor-blur {
       pointer-events: none;
       position: fixed;
-      top: 0;
-      left: 0;
+      top: 0; left: 0;
       border-radius: 50%;
       z-index: 9999;
       transform: translate(-50%, -50%);
     }
 
     .cursor-dot {
-      width: 8px;
-      height: 8px;
+      width: 8px; height: 8px;
       background-color: var(--cyan-glow);
-      box-shadow: 0 0 10px var(--cyan-glow);
+      box-shadow: 0 0 12px var(--cyan-glow);
     }
 
     .cursor-blur {
-      width: 44px;
-      height: 44px;
+      width: 45px; height: 45px;
       border: 1px solid var(--cyan-glow);
       background-color: rgba(0, 242, 254, 0.04);
       transition: transform 0.15s ease-out;
     }
 
     .container {
-      max-width: 1100px;
+      max-width: 1150px;
       margin: 0 auto;
       padding: 2rem 1.5rem;
       position: relative;
@@ -90,66 +86,86 @@
     /* Hero Section */
     .hero {
       text-align: center;
-      padding: 5rem 0 3rem;
+      padding: 6rem 0 3rem;
     }
 
-    .hero-badge {
-      display: inline-block;
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
       padding: 0.4rem 1.2rem;
       border-radius: 20px;
-      background: rgba(157, 78, 221, 0.15);
-      border: 1px solid var(--purple-glow);
-      color: var(--purple-glow);
+      background: rgba(0, 255, 136, 0.1);
+      border: 1px solid var(--accent-green);
+      color: var(--accent-green);
       font-size: 0.85rem;
       font-weight: 600;
-      margin-bottom: 1.25rem;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
+      margin-bottom: 1.5rem;
+      letter-spacing: 1px;
+    }
+
+    .status-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      box-shadow: 0 0 8px var(--accent-green);
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.4; }
+      50% { opacity: 1; }
+      100% { opacity: 0.4; }
     }
 
     .hero h1 {
-      font-size: 3.8rem;
+      font-size: 4rem;
       font-weight: 800;
-      background: linear-gradient(135deg, #ffffff 0%, var(--cyan-glow) 50%, var(--purple-glow) 100%);
+      background: linear-gradient(135deg, #ffffff 10%, var(--cyan-glow) 50%, var(--purple-glow) 90%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       margin-bottom: 0.75rem;
-      letter-spacing: -1px;
     }
 
     .hero p.subtitle {
-      font-size: 1.5rem;
+      font-size: 1.6rem;
       color: var(--cyan-glow);
       font-weight: 500;
-      margin-bottom: 1rem;
+      margin-bottom: 1.2rem;
     }
 
     .hero p.bio-summary {
-      max-width: 720px;
-      margin: 0 auto 1.5rem;
+      max-width: 780px;
+      margin: 0 auto 2rem;
       color: var(--text-muted);
       font-size: 1.05rem;
     }
 
-    /* Stats Grid Metrics */
+    /* Stats Banner */
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1.25rem;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
       margin: 3rem 0;
     }
 
     .stat-card {
       background: var(--card-bg);
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(12px);
       border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 1.5rem;
+      border-radius: 14px;
+      padding: 1.75rem;
       text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      border-color: var(--cyan-glow);
+      transform: translateY(-4px);
     }
 
     .stat-number {
-      font-size: 2.2rem;
+      font-size: 2.5rem;
       font-weight: 800;
       color: var(--cyan-glow);
       display: block;
@@ -162,8 +178,8 @@
       letter-spacing: 1px;
     }
 
-    /* Section Styling */
-    section { margin-bottom: 5rem; }
+    /* Section Headers */
+    section { margin-bottom: 5.5rem; }
 
     .section-title {
       font-size: 2rem;
@@ -176,39 +192,67 @@
     .section-title::after {
       content: '';
       position: absolute;
-      bottom: -6px;
-      left: 0;
-      width: 60px;
-      height: 3px;
+      bottom: -8px; left: 0;
+      width: 70px; height: 3px;
       background: linear-gradient(90deg, var(--cyan-glow), var(--purple-glow));
       border-radius: 2px;
     }
 
-    /* Bento Grid & Glass Cards */
+    /* Interactive Filter Tabs */
+    .filter-tabs {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 0.6rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .filter-btn.active, .filter-btn:hover {
+      background: var(--cyan-glow);
+      color: #000;
+      border-color: var(--cyan-glow);
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+    }
+
+    /* Bento Grid Layout */
     .bento-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
       gap: 1.5rem;
     }
 
     .glass-card {
       background: var(--card-bg);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       border: 1px solid var(--card-border);
       border-radius: 16px;
       padding: 2rem;
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
       transform-style: preserve-3d;
-      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+      position: relative;
     }
 
     .glass-card:hover {
       border-color: var(--cyan-glow);
-      box-shadow: 0 0 25px rgba(0, 242, 254, 0.25);
+      box-shadow: 0 0 30px rgba(0, 242, 254, 0.25);
     }
 
     .glass-card.full-width { grid-column: 1 / -1; }
+
+    .glass-card.hide {
+      display: none;
+    }
 
     .glass-card h3 {
       font-size: 1.4rem;
@@ -222,19 +266,51 @@
       line-height: 1.7;
     }
 
-    /* Category Stack Grouping */
-    .stack-category {
-      margin-bottom: 1.5rem;
+    /* Code Terminal Section */
+    .terminal-container {
+      background: #02040a;
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
     }
 
-    .stack-category h4 {
-      color: var(--purple-glow);
-      font-size: 1rem;
-      margin-bottom: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+    .terminal-header {
+      background: rgba(15, 23, 42, 0.9);
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--card-border);
     }
 
+    .terminal-btn {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+    }
+    .btn-red { background: #ff5f56; }
+    .btn-yellow { background: #ffbd2e; }
+    .btn-green { background: #27c93f; }
+
+    .terminal-title {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-left: auto;
+      font-family: monospace;
+    }
+
+    .terminal-body {
+      padding: 1.5rem;
+      color: #00ff88;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      max-height: 280px;
+      overflow-y: auto;
+    }
+
+    /* Tech Tags */
     .skills-wrapper {
       display: flex;
       flex-wrap: wrap;
@@ -258,7 +334,7 @@
       box-shadow: 0 0 15px var(--cyan-glow);
     }
 
-    .ai-highlight {
+    .ai-card {
       background: linear-gradient(135deg, rgba(157, 78, 221, 0.2) 0%, rgba(0, 242, 254, 0.1) 100%);
       border: 1px solid var(--purple-glow);
     }
@@ -311,16 +387,16 @@
     }
 
     @media (max-width: 768px) {
-      .hero h1 { font-size: 2.6rem; }
+      .hero h1 { font-size: 2.8rem; }
       * { cursor: auto !important; }
-      .cursor-dot, .cursor-blur, #bg-canvas { display: none; }
+      .cursor-dot, .cursor-blur, #webgl-canvas { display: none; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Background Animated Particle Canvas -->
-  <canvas id="bg-canvas"></canvas>
+  <!-- 3D Three.js WebGL Canvas -->
+  <canvas id="webgl-canvas"></canvas>
 
   <!-- Glowing Cursor Follower -->
   <div class="cursor-dot"></div>
@@ -328,12 +404,14 @@
 
   <div class="container">
     
-    <!-- Hero Header -->
+    <!-- Hero Section -->
     <div class="hero">
-      <div class="hero-badge">Enterprise PLM Specialist</div>
+      <div class="status-pill gsap-hero">
+        <span class="status-dot"></span> Available for PLM Projects
+      </div>
       <h1 class="gsap-hero">Yogeshwaran M</h1>
       <p class="subtitle gsap-hero">Windchill Developer</p>
-      <p class="bio-summary gsap-hero">Specializing in PTC Windchill backend architecture, enterprise Java customization, REST API integration, and automated lifecycle rule configuration for global automotive and consumer product organizations.</p>
+      <p class="bio-summary gsap-hero">Specializing in PTC Windchill enterprise backend customization, Java API integrations, Object Initialization Rules (OIR), and AI-assisted PLM workflow automation.</p>
       <p style="color: var(--text-muted);" class="gsap-hero">&#128205; Bangalore, India</p>
 
       <div class="btn-group gsap-hero">
@@ -350,171 +428,201 @@
       </div>
       <div class="stat-card">
         <span class="stat-number">40%</span>
-        <span class="stat-label">Work Reduction via AI Automation</span>
+        <span class="stat-label">Task Time Saved via AI Scripts</span>
       </div>
       <div class="stat-card">
         <span class="stat-number">100%</span>
-        <span class="stat-label">Config & OIR Compliance</span>
+        <span class="stat-label">Windchill OIR & Config Compliance</span>
       </div>
     </div>
 
-    <!-- Technical Expertise Breakdown -->
+    <!-- Interactive Terminal Code Snippet Preview -->
+    <section class="gsap-reveal">
+      <h2 class="section-title">Backend Architecture Snippet</h2>
+      <div class="terminal-container">
+        <div class="terminal-header">
+          <div class="terminal-btn btn-red"></div>
+          <div class="terminal-btn btn-yellow"></div>
+          <div class="terminal-btn btn-green"></div>
+          <span class="terminal-title">WindchillCustomizationListener.java</span>
+        </div>
+        <div class="terminal-body" id="code-terminal">
+// Initializing Windchill Java Listener Service...
+package com.custom.windchill.listeners;
+
+import wt.events.StandardKeyedEventListener;
+import wt.fc.PersistenceManagerEvent;
+import wt.doc.WTDocument;
+
+public class CustomDocumentListener extends StandardKeyedEventListener {
+    @Override
+    public void notifyVetoableEvent(Object eventObj) throws Exception {
+        if (eventObj instanceof PersistenceManagerEvent) {
+            WTDocument doc = (WTDocument) ((PersistenceManagerEvent) eventObj).getTarget();
+            // Custom OIR Validation & AI Trigger Executed
+            System.out.println("[CYBER-LOG] Windchill lifecycle state updated for: " + doc.getNumber());
+        }
+    }
+}
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Filterable Projects & Capabilities -->
     <section>
-      <h2 class="section-title gsap-reveal">Technical Stack & Capabilities</h2>
+      <h2 class="section-title gsap-reveal">Specialization & Projects</h2>
       
-      <div class="stack-category gsap-reveal">
-        <h4>PLM Core & Architecture</h4>
-        <div class="skills-wrapper">
-          <div class="tech-tag">PTC Windchill</div>
-          <div class="tech-tag">OIR (Object Initialization Rules)</div>
-          <div class="tech-tag">Lifecycle & Workflow Administration</div>
-          <div class="tech-tag">XML Schema Configuration</div>
-          <div class="tech-tag">Data Utilities Registration</div>
-        </div>
+      <!-- Interactive Filter Tabs -->
+      <div class="filter-tabs gsap-reveal">
+        <button class="filter-btn active" onclick="filterCategory('all')">All Modules</button>
+        <button class="filter-btn" onclick="filterCategory('backend')">Backend Java & API</button>
+        <button class="filter-btn" onclick="filterCategory('config')">OIR & Configuration</button>
+        <button class="filter-btn" onclick="filterCategory('ai')">AI & Automation</button>
       </div>
 
-      <div class="stack-category gsap-reveal" style="margin-top: 1.5rem;">
-        <h4>Backend Engineering & Integration</h4>
-        <div class="skills-wrapper">
-          <div class="tech-tag">Java (Backend Customization)</div>
-          <div class="tech-tag">REST APIs</div>
-          <div class="tech-tag">SQL & Query Optimization</div>
-          <div class="tech-tag">AI Workflow Scripting</div>
-          <div class="tech-tag">Automation Tools</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Deep-Dive Specialized Services -->
-    <section>
-      <h2 class="section-title gsap-reveal">Specialized Development Services</h2>
-      <div class="bento-grid">
-        <div class="glass-card gsap-reveal" data-tilt data-tilt-max="8">
-          <h3>Custom Java & API Architecture</h3>
-          <p>Developing robust Java server-side customizations, listener hooks, and RESTful API endpoints to extend out-of-the-box Windchill capabilities and integrate external ERP/CAD systems seamlessly.</p>
-        </div>
-        <div class="glass-card gsap-reveal" data-tilt data-tilt-max="8">
-          <h3>OIR & Rule Execution</h3>
-          <p>Configuring complex Object Initialization Rules (OIR) to automate numbering schemes, folder placement, revision sequences, and access control profiles across multi-site enterprise environments.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Featured Enterprise Projects -->
-    <section>
-      <h2 class="section-title gsap-reveal">Featured Project Engagements</h2>
-      <div class="bento-grid">
-        
+      <div class="bento-grid" id="project-grid">
         <!-- BMW Card -->
-        <div class="glass-card gsap-reveal" data-tilt data-tilt-max="8">
+        <div class="glass-card gsap-reveal" data-category="backend" data-tilt data-tilt-max="8">
           <h3>BMW — Backend Customization</h3>
-          <p>Engineered server-side Java logic and custom database query routines for Windchill PLM. Extended default object behaviors and automated complex automotive engineering data processing pipelines.</p>
+          <p>Engineered server-side Java customization, custom persistence listener hooks, and REST APIs for Windchill PLM to handle automotive product lifecycle data flows.</p>
+          <div class="skills-wrapper" style="margin-top: 1rem;">
+            <span class="tech-tag">Java</span>
+            <span class="tech-tag">REST API</span>
+            <span class="tech-tag">SQL</span>
+          </div>
         </div>
 
         <!-- Johnson Outdoors Card -->
-        <div class="glass-card gsap-reveal" data-tilt data-tilt-max="8">
-          <h3>Johnson Outdoors — System Configuration</h3>
-          <p>Executed comprehensive Windchill configuration management. Structured end-to-end Object Initialization Rules (OIR), lifecycle states, and XML schema definitions to align with client manufacturing standards.</p>
+        <div class="glass-card gsap-reveal" data-category="config" data-tilt data-tilt-max="8">
+          <h3>Johnson Outdoors — Configuration</h3>
+          <p>Structured end-to-end Windchill system architecture: Object Initialization Rules (OIR), custom lifecycle workflows, and XML configuration scripts.</p>
+          <div class="skills-wrapper" style="margin-top: 1rem;">
+            <span class="tech-tag">OIR</span>
+            <span class="tech-tag">XML</span>
+            <span class="tech-tag">Lifecycles</span>
+          </div>
         </div>
 
         <!-- AI Innovation Card -->
-        <div class="glass-card full-width ai-highlight gsap-reveal" data-tilt data-tilt-max="4">
-          <h3>&#9889; AI & Automation Integration</h3>
-          <p>Designed and deployed AI-assisted automation scripts to streamline repetitive engineering workflows. This operational enhancement drastically cut manual processing hours and enabled faster deployment release cycles.</p>
+        <div class="glass-card full-width ai-card gsap-reveal" data-category="ai" data-tilt data-tilt-max="4">
+          <h3>&#9889; AI & Automated Workflow Suite</h3>
+          <p>Integrated automated execution scripts and custom AI agents to auto-verify configuration rules, reducing manual technical tasks and accelerating release cycles.</p>
+          <div class="skills-wrapper" style="margin-top: 1rem;">
+            <span class="tech-tag">AI Scripts</span>
+            <span class="tech-tag">Process Automation</span>
+            <span class="tech-tag">Speed Optimization</span>
+          </div>
         </div>
-
       </div>
     </section>
 
-    <!-- Contact CTA -->
-    <section style="text-align: center;">
-      <h2 class="section-title gsap-reveal">Let's Connect</h2>
-      <p style="color: var(--text-muted); margin-bottom: 1.5rem;" class="gsap-reveal">Available for Windchill backend development, system configuration, and PLM automation projects.</p>
-      <div class="btn-group gsap-reveal">
+    <!-- Tech Stack Summary -->
+    <section class="gsap-reveal">
+      <h2 class="section-title">Core Technology Stack</h2>
+      <div class="skills-wrapper">
+        <div class="tech-tag">PTC Windchill</div>
+        <div class="tech-tag">Java (Backend Customization)</div>
+        <div class="tech-tag">SQL Database</div>
+        <div class="tech-tag">RESTful Web Services</div>
+        <div class="tech-tag">OIR Configuration</div>
+        <div class="tech-tag">XML Schema</div>
+        <div class="tech-tag">Data Utilities</div>
+        <div class="tech-tag">AI Automation Scripts</div>
+      </div>
+    </section>
+
+    <!-- Connect CTA -->
+    <section style="text-align: center;" class="gsap-reveal">
+      <h2 class="section-title">Let's Build Together</h2>
+      <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Open for enterprise Windchill development and PLM customization projects.</p>
+      <div class="btn-group">
         <a href="mailto:yogeshwaran.m.official@gmail.com" class="btn btn-primary">Email Me Directly</a>
-        <a href="https://www.linkedin.com/in/yogeshwaran-m-8a3a6b256/" target="_blank" class="btn btn-secondary">Connect on LinkedIn</a>
+        <a href="https://www.linkedin.com/in/yogeshwaran-m-8a3a6b256/" target="_blank" class="btn btn-secondary">LinkedIn Profile</a>
       </div>
     </section>
 
     <footer>
-      <p>&copy; 2026 Yogeshwaran M. Built with GSAP, Particle Canvas & Vanilla-Tilt.</p>
+      <p>&copy; 2026 Yogeshwaran M. Built with Three.js WebGL & GSAP.</p>
     </footer>
 
   </div>
 
   <script>
-    // Particle Mesh Background Script
-    const canvas = document.getElementById('bg-canvas');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
+    // Three.js Interactive 3D Background Mesh
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('webgl-canvas'), alpha: true, antialias: true });
+    
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
 
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+    const particlesGeometry = new THREE.BufferGeometry();
+    const count = 120;
+    const positions = new Float32Array(count * 3);
+
+    for (let i = 0; i < count * 3; i++) {
+      positions[i] = (Math.random() - 0.5) * 15;
     }
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
-    class Particle {
-      constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.vx = (Math.random() - 0.5) * 0.6;
-        this.vy = (Math.random() - 0.5) * 0.6;
-        this.radius = Math.random() * 1.5 + 1;
-      }
-      update() {
-        this.x += this.vx;
-        this.y += this.vy;
-        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-      }
-      draw() {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(0, 242, 254, 0.3)';
-        ctx.fill();
-      }
+    const particlesMaterial = new THREE.PointsMaterial({
+      size: 0.05,
+      color: 0x00f2fe,
+      transparent: true,
+      opacity: 0.7
+    });
+
+    const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+    scene.add(particlesMesh);
+    camera.position.z = 5;
+
+    let mouseX = 0, mouseY = 0;
+    window.addEventListener('mousemove', (e) => {
+      mouseX = (e.clientX / window.innerWidth - 0.5) * 0.5;
+      mouseY = (e.clientY / window.innerHeight - 0.5) * 0.5;
+    });
+
+    function animate3D() {
+      requestAnimationFrame(animate3D);
+      particlesMesh.rotation.y += 0.001;
+      particlesMesh.rotation.x += (mouseY - particlesMesh.rotation.x) * 0.05;
+      particlesMesh.rotation.y += (mouseX - particlesMesh.rotation.y) * 0.05;
+      renderer.render(scene, camera);
     }
+    animate3D();
 
-    for (let i = 0; i < 45; i++) {
-      particles.push(new Particle());
-    }
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
 
-    function animateParticles() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (let i = 0; i < particles.length; i++) {
-        particles[i].update();
-        particles[i].draw();
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 120) {
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(0, 242, 254, ${0.15 - dist / 1200})`;
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
-          }
-        }
-      }
-      requestAnimationFrame(animateParticles);
-    }
-    animateParticles();
-
-    // Cursor Follower Script
+    // Custom Glowing Cursor Follower
     const dot = document.querySelector('.cursor-dot');
     const blur = document.querySelector('.cursor-blur');
 
     window.addEventListener('mousemove', (e) => {
       dot.style.left = `${e.clientX}px`;
       dot.style.top = `${e.clientY}px`;
-      blur.animate({ left: `${e.clientX}px`, top: `${e.clientY}px` }, { duration: 450, fill: "forwards" });
+      blur.animate({ left: `${e.clientX}px`, top: `${e.clientY}px` }, { duration: 400, fill: "forwards" });
     });
 
-    // GSAP Scroll Animations
+    // Filter Category Script
+    function filterCategory(cat) {
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      const cards = document.querySelectorAll('#project-grid .glass-card');
+      cards.forEach(card => {
+        if (cat === 'all' || card.getAttribute('data-category') === cat) {
+          card.classList.remove('hide');
+        } else {
+          card.classList.add('hide');
+        }
+      });
+    }
+
+    // GSAP ScrollTrigger Animations
     gsap.registerPlugin(ScrollTrigger);
 
     gsap.from(".gsap-hero", {
