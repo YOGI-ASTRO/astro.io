@@ -3,260 +3,392 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Your Name | Portfolio</title>
+  <title>Yogeshwaran M | Windchill Developer</title>
   
-  <!-- AOS Animation Library CSS CDN -->
-  <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+  <!-- GSAP & ScrollTrigger CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <!-- Vanilla-Tilt CDN for 3D Cards -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
 
   <style>
     :root {
-      --bg: #0b0f19;
-      --card-bg: #151d30;
-      --accent: #38bdf8;
-      --accent-glow: rgba(56, 189, 248, 0.25);
-      --text: #f8fafc;
+      --bg-dark: #080c14;
+      --card-bg: rgba(15, 23, 42, 0.75);
+      --card-border: rgba(56, 189, 248, 0.15);
+      --cyan-glow: #00f2fe;
+      --purple-glow: #9d4edd;
+      --text-main: #f8fafc;
       --text-muted: #94a3b8;
-      --border: #1e293b;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      cursor: none; /* Hide default cursor for custom glowing follower */
+    }
+
     html {
       scroll-behavior: smooth;
     }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
+      background-color: var(--bg-dark);
+      color: var(--text-main);
       line-height: 1.6;
-      padding: 2rem 1rem;
       overflow-x: hidden;
+      padding: 0 1rem;
     }
 
+    /* Custom Glowing Cursor */
+    .cursor-dot, .cursor-blur {
+      pointer-events: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      border-radius: 50%;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+    }
+
+    .cursor-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--cyan-glow);
+      box-shadow: 0 0 10px var(--cyan-glow);
+    }
+
+    .cursor-blur {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--cyan-glow);
+      background-color: rgba(0, 242, 254, 0.05);
+      transition: transform 0.15s ease-out;
+    }
+
+    /* Container */
     .container {
-      max-width: 800px;
+      max-width: 1050px;
       margin: 0 auto;
+      padding: 4rem 1rem;
     }
 
-    header {
+    /* Hero Section */
+    .hero {
       text-align: center;
-      padding: 5rem 0 3rem;
-    }
-    
-    /* Fade-in & pulse glow effect on title */
-    header h1 { 
-      font-size: 3rem; 
-      color: var(--text);
-      letter-spacing: -0.5px;
-      animation: fadeIn 1s ease-in-out;
-    }
-
-    header p { 
-      color: var(--accent); 
-      font-size: 1.25rem; 
-      font-weight: 500; 
-      margin-top: 0.5rem; 
-    }
-
-    .bio { 
-      color: var(--text-muted); 
-      margin-top: 1rem; 
-      max-width: 600px; 
-      margin-left: auto; 
-      margin-right: auto; 
-    }
-
-    section { margin-bottom: 4rem; }
-    
-    h2 {
-      font-size: 1.5rem;
-      border-bottom: 2px solid var(--border);
-      padding-bottom: 0.5rem;
-      margin-bottom: 1.5rem;
-      color: var(--text);
+      padding: 6rem 0 4rem;
       position: relative;
     }
-    
-    /* Animated underline accent for section headers */
-    h2::after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 0;
-      width: 60px;
-      height: 2px;
-      background-color: var(--accent);
+
+    .hero-badge {
+      display: inline-block;
+      padding: 0.35rem 1rem;
+      border-radius: 20px;
+      background: rgba(157, 78, 221, 0.15);
+      border: 1px solid var(--purple-glow);
+      color: var(--purple-glow);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
-    .skills-grid {
+    .hero h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffffff 0%, var(--cyan-glow) 50%, var(--purple-glow) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.75rem;
+    }
+
+    .hero p.subtitle {
+      font-size: 1.4rem;
+      color: var(--cyan-glow);
+      font-weight: 500;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero p.location {
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    /* Section Styling */
+    section {
+      margin-bottom: 5rem;
+    }
+
+    .section-title {
+      font-size: 1.8rem;
+      color: var(--text-main);
+      margin-bottom: 2rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      width: 50%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--cyan-glow), var(--purple-glow));
+      border-radius: 2px;
+    }
+
+    /* Bento Grid Section Layout */
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .glass-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      transform-style: preserve-3d;
+      transform: translateZ(0);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .glass-card:hover {
+      border-color: var(--cyan-glow);
+      box-shadow: 0 0 25px rgba(0, 242, 254, 0.2);
+    }
+
+    .glass-card.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .glass-card h3 {
+      font-size: 1.35rem;
+      color: var(--cyan-glow);
+      margin-bottom: 0.75rem;
+    }
+
+    .glass-card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    /* Tech Stack Badges */
+    .skills-wrapper {
       display: flex;
       flex-wrap: wrap;
       gap: 0.75rem;
+      margin-top: 1rem;
     }
 
-    /* Floating Hover Animation for Badges */
-    .badge {
-      background-color: var(--card-bg);
-      border: 1px solid var(--border);
-      color: var(--accent);
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      font-size: 0.9rem;
-      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-      cursor: default;
-    }
-
-    .badge:hover {
-      transform: translateY(-4px);
-      border-color: var(--accent);
-      box-shadow: 0 4px 15px var(--accent-glow);
-    }
-
-    /* 3D-Like Tilt and Lift Hover Animation for Cards */
-    .project-card {
-      background-color: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.75rem;
-      margin-bottom: 1.5rem;
-      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
-    }
-
-    .project-card:hover {
-      transform: translateY(-6px) scale(1.01);
-      border-color: var(--accent);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px var(--accent-glow);
-    }
-
-    .project-card h3 { color: var(--accent); font-size: 1.25rem; margin-bottom: 0.5rem; }
-    .project-card p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.25rem; }
-    
-    .project-links a {
-      color: var(--text);
-      text-decoration: none;
-      font-size: 0.9rem;
-      font-weight: 600;
-      margin-right: 1.25rem;
-      position: relative;
-      transition: color 0.3s ease;
-    }
-
-    .project-links a:hover {
-      color: var(--accent);
-    }
-
-    .contact-links {
-      display: flex;
-      justify-content: center;
-      gap: 1.5rem;
-      margin-top: 1.5rem;
-    }
-
-    /* Interactive Animated Buttons */
-    .btn {
-      display: inline-block;
-      background: var(--accent);
-      color: #0b0f19;
-      padding: 0.75rem 1.5rem;
+    .tech-tag {
+      background: rgba(0, 242, 254, 0.08);
+      border: 1px solid rgba(0, 242, 254, 0.25);
+      color: var(--text-main);
+      padding: 0.5rem 1.1rem;
       border-radius: 8px;
-      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .tech-tag:hover {
+      background: var(--cyan-glow);
+      color: #000;
+      box-shadow: 0 0 15px var(--cyan-glow);
+    }
+
+    /* AI Highlight Banner Inside Bento */
+    .ai-highlight {
+      background: linear-gradient(135deg, rgba(157, 78, 221, 0.2) 0%, rgba(0, 242, 254, 0.1) 100%);
+      border: 1px solid var(--purple-glow);
+    }
+
+    /* Buttons */
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+
+    .btn {
+      padding: 0.8rem 1.8rem;
+      border-radius: 8px;
       font-weight: 600;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
     }
 
-    .btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 25px var(--accent-glow);
+    .btn-primary {
+      background: linear-gradient(90deg, var(--cyan-glow), var(--purple-glow));
+      color: #000;
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
     }
 
-    .btn-outline {
+    .btn-primary:hover {
+      box-shadow: 0 0 25px rgba(157, 78, 221, 0.7);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
       background: transparent;
-      color: var(--text);
-      border: 1px solid var(--border);
+      color: var(--text-main);
+      border: 1px solid var(--card-border);
     }
 
-    .btn-outline:hover {
-      border-color: var(--accent);
-      color: var(--accent);
+    .btn-secondary:hover {
+      border-color: var(--cyan-glow);
+      color: var(--cyan-glow);
     }
 
-    footer { text-align: center; color: var(--text-muted); font-size: 0.85rem; padding-top: 3rem; }
+    footer {
+      text-align: center;
+      color: var(--text-muted);
+      padding: 3rem 0;
+      font-size: 0.85rem;
+      border-top: 1px solid var(--card-border);
+    }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2.5rem; }
+      * { cursor: auto !important; }
+      .cursor-dot, .cursor-blur { display: none; }
     }
   </style>
 </head>
 <body>
 
+  <!-- Custom Glowing Cursor Followers -->
+  <div class="cursor-dot"></div>
+  <div class="cursor-blur"></div>
+
   <div class="container">
-    <header data-aos="fade-down" data-aos-duration="1000">
-      <h1>Your Name</h1>
-      <p>Software Engineer / Architect</p>
-      <p class="bio">Building scalable web applications, backend services, and high-performance digital solutions.</p>
-    </header>
+    <!-- Hero Section -->
+    <div class="hero">
+      <div class="hero-badge">Enterprise PLM Specialist</div>
+      <h1 class="gsap-hero">Yogeshwaran M</h1>
+      <p class="subtitle gsap-hero">Windchill Developer</p>
+      <p class="location gsap-hero">&#128205; Bangalore, India</p>
 
-    <!-- Skills Section with Staggered Flip Animation -->
+      <div class="btn-group gsap-hero">
+        <a href="mailto:yogeshwaran.m.official@gmail.com" class="btn btn-primary">Get In Touch</a>
+        <a href="https://www.linkedin.com/in/yogeshwaran-m-8a3a6b256/" target="_blank" class="btn btn-secondary">LinkedIn Profile</a>
+      </div>
+    </div>
+
+    <!-- Technical Stack Section -->
     <section>
-      <h2 data-aos="fade-right">Skills & Technologies</h2>
-      <div class="skills-grid">
-        <span class="badge" data-aos="zoom-in" data-aos-delay="100">JavaScript / TypeScript</span>
-        <span class="badge" data-aos="zoom-in" data-aos-delay="200">React</span>
-        <span class="badge" data-aos="zoom-in" data-aos-delay="300">Node.js</span>
-        <span class="badge" data-aos="zoom-in" data-aos-delay="400">Java</span>
-        <span class="badge" data-aos="zoom-in" data-aos-delay="500">HTML5 & CSS3</span>
-        <span class="badge" data-aos="zoom-in" data-aos-delay="600">Git & GitHub</span>
-        <span class="badge" data-aos="zoom-in" data-aos-delay="700">REST APIs</span>
+      <h2 class="section-title gsap-reveal">Core Expertise & Tech Stack</h2>
+      <div class="skills-wrapper gsap-reveal">
+        <div class="tech-tag">PTC Windchill</div>
+        <div class="tech-tag">Java (Backend Customization)</div>
+        <div class="tech-tag">SQL</div>
+        <div class="tech-tag">REST API</div>
+        <div class="tech-tag">OIR (Object Initialization Rules)</div>
+        <div class="tech-tag">XML Configuration</div>
       </div>
     </section>
 
-    <!-- Project Cards with Scroll-Up Reveal -->
+    <!-- Project Experience (Interactive Bento Grid) -->
     <section>
-      <h2 data-aos="fade-right">Featured Projects</h2>
-      
-      <div class="project-card" data-aos="fade-up" data-aos-duration="800">
-        <h3>Project Title 1</h3>
-        <p>A brief description of the project, highlighting problem-solving, clean visual architecture, and performance techniques used.</p>
-        <div class="project-links">
-          <a href="#" target="_blank">Live Demo &rarr;</a>
-          <a href="#" target="_blank">View Code &rarr;</a>
+      <h2 class="section-title gsap-reveal">Featured Project Experience</h2>
+      <div class="bento-grid">
+        
+        <!-- BMW Project Card -->
+        <div class="glass-card gsap-reveal" data-tilt data-tilt-max="10" data-tilt-speed="400">
+          <h3>BMW — Backend Customization</h3>
+          <p>Spearheaded Windchill backend customization using Java, REST APIs, and database queries. Engineered business logic modifications to extend default PLM behavior to meet complex automotive engineering data workflows.</p>
         </div>
-      </div>
 
-      <div class="project-card" data-aos="fade-up" data-aos-duration="800" data-aos-delay="150">
-        <h3>Project Title 2</h3>
-        <p>A brief description of another showcase application emphasizing design responsiveness and smooth user interaction.</p>
-        <div class="project-links">
-          <a href="#" target="_blank">Live Demo &rarr;</a>
-          <a href="#" target="_blank">View Code &rarr;</a>
+        <!-- Johnson Outdoors Project Card -->
+        <div class="glass-card gsap-reveal" data-tilt data-tilt-max="10" data-tilt-speed="400">
+          <h3>Johnson Outdoors — Configuration</h3>
+          <p>Executed end-to-end Windchill system configuration, configuring Object Initialization Rules (OIR), lifecycles, and XML schemas to streamline product lifecycle operations.</p>
         </div>
+
+        <!-- AI & Automation Impact Card (Full Width Highlight) -->
+        <div class="glass-card full-width ai-highlight gsap-reveal" data-tilt data-tilt-max="5">
+          <h3>&#9889; AI & Automation Innovation</h3>
+          <p>Integrated automated scripts and AI workflow tools to optimize repetitive technical tasks, significantly reducing manual effort and accelerating release timelines across client environments.</p>
+        </div>
+
       </div>
     </section>
 
-    <!-- Contact Section with Pop-up Animation -->
-    <section style="text-align: center;" data-aos="zoom-in-up" data-aos-duration="900">
-      <h2>Get In Touch</h2>
-      <div class="contact-links">
-        <a href="mailto:your.email@example.com" class="btn">Email Me</a>
-        <a href="https://linkedin.com/in/yourprofile" target="_blank" class="btn btn-outline">LinkedIn</a>
-        <a href="https://github.com/yogi-astro" target="_blank" class="btn btn-outline">GitHub</a>
+    <!-- Contact Section -->
+    <section style="text-align: center;">
+      <h2 class="section-title gsap-reveal">Connect & Collaborate</h2>
+      <p style="color: var(--text-muted); margin-bottom: 1.5rem;" class="gsap-reveal">Open for technical consultations and enterprise Windchill development opportunities.</p>
+      <div class="btn-group gsap-reveal">
+        <a href="mailto:yogeshwaran.m.official@gmail.com" class="btn btn-primary">Email Me</a>
+        <a href="https://www.linkedin.com/in/yogeshwaran-m-8a3a6b256/" target="_blank" class="btn btn-secondary">LinkedIn</a>
       </div>
     </section>
 
     <footer>
-      <p>&copy; 2026 Your Name. Powered by GitHub Pages.</p>
+      <p>&copy; 2026 Yogeshwaran M. Built with GSAP & Vanilla-Tilt.</p>
     </footer>
   </div>
 
-  <!-- AOS Animation Script CDN -->
-  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
   <script>
-    // Initialize Scroll Animations
-    AOS.init({
-      once: true, // Animations execute once when scrolling down
-      offset: 100 // Trigger animations 100px before scrolling into view
+    // Custom Glowing Cursor Follower Script
+    const dot = document.querySelector('.cursor-dot');
+    const blur = document.querySelector('.cursor-blur');
+
+    window.addEventListener('mousemove', (e) => {
+      const posX = e.clientX;
+      const posY = e.clientY;
+
+      dot.style.left = `${posX}px`;
+      dot.style.top = `${posY}px`;
+
+      blur.animate({
+        left: `${posX}px`,
+        top: `${posY}px`
+      }, { duration: 500, fill: "forwards" });
+    });
+
+    // Initialize GSAP & ScrollTrigger Reveal Animations
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Hero Section Animation
+    gsap.from(".gsap-hero", {
+      opacity: 0,
+      y: 30,
+      duration: 1,
+      stagger: 0.2,
+      ease: "power3.out"
+    });
+
+    // Scroll Reveal for Sections & Cards
+    gsap.utils.toArray(".gsap-reveal").forEach((element) => {
+      gsap.from(element, {
+        scrollTrigger: {
+          trigger: element,
+          start: "top 85%",
+        },
+        opacity: 0,
+        y: 40,
+        duration: 0.8,
+        ease: "power3.out"
+      });
+    });
+
+    // Initialize 3D Card Tilt
+    VanillaTilt.init(document.querySelectorAll("[data-tilt]"), {
+      glare: true,
+      "max-glare": 0.2
     });
   </script>
 </body>
